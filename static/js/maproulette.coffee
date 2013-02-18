@@ -193,16 +193,17 @@ initmap = ->
   # add keyboard hooks
   if enablekeyboardhooks
     $(document).bind "keydown", (e) ->
-      switch e.which
-        when 81 #q
-          nextUp "falsepositive"
-        when 87 #w
-          nextUp "skip"
-        when 69 #e
+      key = String.fromCharCode(e)
+      switch key.which
+        when "q"
+            nextUp "falsepositive"
+        when "w"
+            nextUp "skip"
+        when "e"
           openIn('josm')
-        when 82 #r
+        when "r"
           openIn('potlatch')
-        when 73 #i
+        when "i"
           openIn('id')
 
     # Update the counter
