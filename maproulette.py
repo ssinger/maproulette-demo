@@ -97,15 +97,6 @@ def store_attempt(task_id):
     # return and return that instead
     return ""
 
-
-#	fixflag: {
-#		fixed: 100,
-#		notfixed: 0,
-#		someonebeatme: 100,
-#		noerrorafterall: 100,
-#		falsepositive: 1,
-#		skip: -1   
-
 # Fallback to serving a file
 @app.route('/')
 def index():
