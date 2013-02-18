@@ -9,8 +9,9 @@ map = undefined
 geojsonLayer = new L.GeoJSON()
 bingLayer = undefined
 osmLayer = undefined
-osmUrl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-osmAttrib = "Map data © OpenStreetMap contributors"
+# Set default tile url and attribution
+tileUrl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+tileAttrib = '© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
 t = undefined
 editor = ""
 taskId = 0
@@ -160,6 +161,9 @@ revGeocode = ->
     polygons = []
     return false  if not features? or features.length is 0 or not features
     for feature in features
+      if feature.properties.selected is true
+        osmObjId = feature.properties.id
+        osmObjType = feature.properties.type
       geojsonLayer.addData feature
     extent = getExtent(features[0])
     map.fitBounds(extent)
@@ -167,12 +171,12 @@ revGeocode = ->
     revGeocode()
     updateCounter()
 
-@initmap = ->
+initmap = ->
   ###
   # Initialize Leaflet map and layers
   ###
   map = new L.Map "map"
-  osmLayer = new L.TileLayer(osmUrl, attribution: osmAttrib)
+  osmLayer = new L.TileLayer(tileUrl, attribution: tileAttrib)
   map.setView new L.LatLng(40.0, -90.0), 17
   map.addLayer osmLayer
   # We need an onEachFeature function to create markers
@@ -198,9 +202,9 @@ revGeocode = ->
           openIn('josm')
         when 82 #r
           openIn('potlatch')
+        when 73 #i
+          openIn('id')
 
-    # Fill in the challenge metadata
-    challengeMeta()
     # Update the counter
     updateCounter()
 
@@ -243,6 +247,15 @@ revGeocode = ->
     PotlatchURL = "http://www.openstreetmap.org/edit?editor=potlatch2&bbox=" + map.getBounds().toBBoxString()
     window.open PotlatchURL
     setTimeout confirmRemap, 4000
+  else if editor is "id"
+    if osmObjType == "node"
+      id = "n#{osmObjId}"
+    else if osmObjType == "way"
+      id = "w#{osmObjId}"
+    # Sorry, no relation support in iD (yet?)
+    loc = "#{map.getZoom()}/#{map.getCenter().lat}/#{map.getCenter().lng}"
+    window.open "http://geowiki.com/iD/#id=#{id}&map=#{loc}"
+    confirmRemap()
 
 @confirmRemap = () ->
   ###
@@ -285,10 +298,13 @@ updateCounter = ->
     remaining = data.total - data.done
     $("#counter").text remaining
 
-challengeMeta = ->
+@init = ->
   ###
   # Use the challenge metadata to fill in the web page
   ###
   $.getJSON "/meta", (data) ->
     help = data.help
     $('#challengeDetails').text data.blurb
+    tileURL = data.tileurl if data.tileurl?
+    tileAttrib = data.tileasttribution if data.tileattribution?
+    initmap()

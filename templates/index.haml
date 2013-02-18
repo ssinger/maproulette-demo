@@ -1,13 +1,13 @@
-%html lang=en"
+-extends "base.html"
+-block html
   %head
-    %title
-      MapRoulette
+    %title << MapRoulette
     %link rel="stylesheet" href="css/style.css"
-    %link rel="stylesheet"  href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css"
+    %link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css"
     %script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"
     %script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"
     %script src="js/maproulette.js"
-  %body onload="initmap()"
+  %body onload="init()"
     %div#map.fullscreen
     %div#msgBox
     %div#dlgBox
@@ -24,7 +24,7 @@
       %div style="font-size:10px"
         we're down to
         %span#counter
-        connectivity errors. Thanks!    
+          connectivity errors. Thanks!    
       %div#noterror.button onclick='nextUp("noterror")'
         THIS IS NOT AN ERROR:/
         %span.key << q
@@ -37,3 +37,6 @@
       %div.button onclick='openIn("potlatch")'
         EDIT IN POTLATCH
         %span.key << r
+      %div.button onclick='openIn("id")'
+        EDIT IN ID
+        %span.key << i
