@@ -1,0 +1,11 @@
+Flask==0.9
+Flask-Coffee==0.3
+Hamlish-Jinja==0.3.0
+Jinja2==2.6
+Markdown==2.2.1
+Werkzeug==0.8.3
+geojson==1.0.1
+simplejson==2.6.1
+pyspatialite==3.0.1
+pysqlite==1.0.1
+
