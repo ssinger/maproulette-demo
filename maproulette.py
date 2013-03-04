@@ -42,14 +42,14 @@ def stats():
     return jsonify({'total': total, 'done': done})
 
 @app.route('/task')
-def get_anomaly():
-    """Retrieves a candidate anomaly and returns as geoJSON"""
+def get_task():
+    """Retrieves a candidate task and returns as geoJSON"""
     conn = db.connect('noaddr.sqlite')
     cur = conn.cursor()
     recs = cur.execute("""
 SELECT id, description, AsGeoJSON(pt) from anomaly WHERE seen < 3
 ORDER BY RANDOM() LIMIT 1""").fetchall()
-    anomaly_id, text, point = recs[0]
+    task_id, text, point = recs[0]
     fc = geojson.FeatureCollection([
             geojson.Feature(geometry = geojson.loads(point),
                             properties = {
@@ -58,11 +58,12 @@ ORDER BY RANDOM() LIMIT 1""").fetchall()
                     # it's OSM element type (type) and OSM ID (id)
                     'selected': True,
                     'type': 'node',
-                    'id': anomaly_id,
+                    'id': task_id,
                     'text': text})])
     
     return geojson.dumps({
-            'id': anomaly_id,
+            'challenge': settings.name,
+            'id': task_id,
             'text': text,
             'features': fc})
 
@@ -97,14 +98,14 @@ def store_attempt(task_id):
     # return and return that instead
     return ""
 
-# Fallback to serving a file
-@app.route('/')
-def index():
-    return render_template('index.haml')
-
 @app.route('/<path:path>')
 def catch_all(path):
     return send_from_directory('static', path)
 
 if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", help = "the port to bind to")
+    parser.add
+    parser.parse_args()
     app.run()
