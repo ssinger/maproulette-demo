@@ -1,8 +1,8 @@
-from flask import Flask, request, abort, send_from_directory, jsonify, render_template
+#!/usr/bin/env python
+
+from flask import Flask, request, abort, jsonify
 import geojson
 from pyspatialite import dbapi2 as db
-from hamlish_jinja import HamlishExtension
-from flaskext.coffee import coffee
 from markdown import markdown
 import settings
 
@@ -11,13 +11,8 @@ conn = db.connect('noaddr.sqlite')
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('REMAPATRON_SETTINGS', silent = True)
-
-# Add haml support
-app.jinja_env.add_extension(HamlishExtension)
-app.jinja_env.hamlish_mode = 'indented'
 app.debug = True
 
-coffee(app)
 
 @app.route('/meta')
 def meta():
@@ -98,14 +93,9 @@ def store_attempt(task_id):
     # return and return that instead
     return ""
 
-@app.route('/<path:path>')
-def catch_all(path):
-    return send_from_directory('static', path)
-
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", help = "the port to bind to")
-    parser.add
-    parser.parse_args()
-    app.run()
+    parser.add_argument("--port", type = "int", help = "the port to bind to")
+    args = parser.parse_args()
+    app.run(port=args.port)
