@@ -17,13 +17,15 @@ app.debug = True
 @app.route('/meta')
 def meta():
     """Returns the metadata for the current challenge"""
-    return jsonify({
-            'name': settings.name,
-            'description': settings.description,
-            'difficulty': settings.difficulty,
-            'blurb': settings.blurb,
-            'help': markdown(settings.help),
-            })
+    return geojson.dumps({
+        'slug': settings.slug,
+        'name': settings.name,
+        'description': settings.description,
+        'difficulty': settings.difficulty,
+        'blurb': settings.blurb,
+        'help': markdown(settings.help),
+        'polygon': settings.polygon,
+        })
 
 @app.route('/stats')
 def stats():
@@ -96,6 +98,6 @@ def store_attempt(task_id):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type = "int", help = "the port to bind to")
+    parser.add_argument("--port", type = int, help = "the port to bind to")
     args = parser.parse_args()
     app.run(port=args.port)

@@ -1,7 +1,11 @@
-name = "restaurant-noaddr"
+from shapely.geometry import box
+slug = "restaurant-noaddr"
+name = "Restaurants without an Address"
 description = "Restaurants with no addresses"
 difficulty = "beginner"
 blurb = description
+# polygon = box(minx, miny, maxx, maxy, ccw = True)
+polygon = box(-90.0, -180.0, 90.0, 180.0)
 help = """
 # Place Addresses on Restaurants
 
