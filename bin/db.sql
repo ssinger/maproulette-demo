@@ -31,6 +31,9 @@ create table task (
        foreign key (state_id) references task_state(state_id)
 );
 
+select AddGeometryColumn('task','centroid',4326,'POINT',2);
+create index task_centeroid_idx on task(centroid) using GIST;
+
 create table task_assignment (
        task_assignment_id serial8 primary key,
        task_id int4 not null,
