@@ -45,6 +45,8 @@ create table task_assignment (
        foreign key (task_id) references task(task_id),
        foreign key (user_id) references osm_user(user_id)
 );
+create index task_assignment_start_time_idx on task_assignment(start_time);
+create index task_assignment_task_id on task_assignment(task_id);
 
 create table task_object (
        task_object_id serial8 primary key,
