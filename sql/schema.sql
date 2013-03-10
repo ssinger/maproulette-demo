@@ -7,12 +7,15 @@ create table challenge (
        slug text,
        difficulty int4 not null,
        blub text,
-       polygon text not null,
        help text
 );
 
+
+select AddGeometryColumn('challenge','poloygon',4326,'POLYGON',2);
+
+
 create table osm_user (
-       user_id serial primary key,
+       user_id int4 primary key,
        osm_id text not null ,
        oauth_token text
 );
@@ -27,12 +30,15 @@ create table task (
        task_id serial primary key,
        challenge_id int4 not null,
        state_id int4,
+       render_geometry text,
+       external_id text,
        foreign key (task_id) references challenge(challenge_id),
        foreign key (state_id) references task_state(state_id)
 );
 
 select AddGeometryColumn('task','centroid',4326,'POINT',2);
-create index task_centeroid_idx on task(centroid) using GIST;
+create index task_centeroid_idx on task using gist (centroid);
+create index task_external_id_idx on task(external_id);
 
 create table task_assignment (
        task_assignment_id serial8 primary key,
@@ -48,16 +54,6 @@ create table task_assignment (
 create index task_assignment_start_time_idx on task_assignment(start_time);
 create index task_assignment_task_id on task_assignment(task_id);
 
-create table task_object (
-       task_object_id serial8 primary key,
-       task_id int8 not null,
-       geometry geometry not null,
-       osm_id int8 ,
-       osm_version int,
-       osm_type text,
-       object_role text,
-       foreign key (task_id) references task(task_id)
-       
-);
+
 
 commit;
